@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./dashboardMainContent.css"
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { baseURL, randomNum, socket, utilActiveDB, utilSelectedInput } from '../../../utils/constant';
+import { baseURL, pusher, randomNum, socket, utilActiveDB, utilSelectedInput } from '../../../utils/constant';
 import ProfileBox from '../../Components/ProfileBox/ProfileBox';
 import Countdown, { } from 'react-countdown'
 import { toast } from 'react-toastify';
@@ -41,13 +41,19 @@ const DashboardMainContent = ({ state }) => {
   const [selectedColor, setSelectedColor] = useState("")
   const [activeMeme, setActiveMEME] = useState({})
   const [isVoted, setIsVoted] = useState(false)
+  const ROOM = pusher.subscribe('ROOM');
 
+  
   useEffect(() => {
-    socket.on("roundPushBack", data => {
+    ROOM.bind('roundPushBack', (data)=> { 
+      console.log("roundpushback=>", data)
+      console.log(state.room)
+      if (data.room==myRoom.roomName){
       toast.success("A new Round has been  Created ")
       console.log("initializing db again ")
       initDashboardContent()
-    })
+      }
+    });  
     initDashboardContent()
   }, [])
   const initDashboardContent = () => {
@@ -176,7 +182,12 @@ const DashboardMainContent = ({ state }) => {
       .then(resp => {
         if (resp.data?.status) {
           console.log("a new round created and roundpush  by socket ")
-          socket.emit("roundPush", { room: myRoom.roomName, })
+
+          axios.post(`${baseURL}/socket/roundPush`, {room:myRoom.roomName})
+          .then(resp=>{
+            console.log("roundPush =>",resp.data)
+          })
+          // socket.emit("roundPush", { room: myRoom.roomName, })
         } else {
           toast.error(resp.data.message)
         }
