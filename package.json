@@ -1,0 +1,35 @@
+{
+  "name": "connector",
+  "version": "1.0.0",
+  "description": "social nerwork for developers",
+  "main": "server.js",
+  "scripts": {
+    "start": " nodemon server.js",
+    "frontend": "npm run start --prefix frontend",
+    "dev": "concurrently \"npm run start\" \"npm run frontend\""
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "concurrently": "*",
+    "cors": "*",
+    "express": "*",
+    "gravatar": "*",
+    "js-yaml": "*",
+    "jsonwebtoken": "*",
+    "moment": "*",
+    "mongoose": "*",
+    "morgan": "*",
+    "multer": "*",
+    "nodemon": "*",
+    "passport": "*",
+    "passport-jwt": "*",
+    "paypal-rest-sdk": "*",
+    "pusher": "^5.1.2",
+    "socket.io": "*",
+    "validator": "*"
+  },
+  "homepage": "."
+}

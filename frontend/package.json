@@ -1,0 +1,63 @@
+{
+  "name": "meme-challange",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "@mui/styled-engine-sc": "*",
+    "@testing-library/jest-dom": "*",
+    "@testing-library/react": "*",
+    "@testing-library/user-event": "*",
+    "aguid": "*",
+    "axios": "*",
+    "gapi-script": "*",
+    "get-video-id": "*",
+    "jwt-decode": "*",
+    "moment": "*",
+    "pusher-js": "^8.0.0",
+    "query-string": "*",
+    "react": "*",
+    "react-confirm-alert": "*",
+    "react-countdown": "*",
+    "react-dom": "*",
+    "react-facebook-login": "*",
+    "react-google-login": "*",
+    "react-linkedin-login": "*",
+    "react-linkedin-login-oauth2": "*",
+    "react-paypal-button-v2": "*",
+    "react-router-dom": "*",
+    "react-scripts": "",
+    "react-toastify": "*",
+    "recoil": "*",
+    "socket.io-client": "*",
+    "styled-components": "*",
+    "web-vitals": "*"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
