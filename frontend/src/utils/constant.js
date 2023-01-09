@@ -1,20 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { getUserFromToken } from "../Util";
-import socketIOClient from 'socket.io-client'
+import { getUserFromToken } from "../Util"; 
 import Pusher from "pusher-js";
 
-export const baseURL = "http://localhost:4000"  
-// export const baseURL= "http://89.116.225.104:4000"
+// export const baseURL = "http://localhost:4000"  
+export const baseURL= "http://89.116.225.104:4000"
 // export const baseURL= "https://memechallenge.me:4000"
 
 
-
-export const socket = socketIOClient(baseURL, {
-     transports: ['websocket', 'polling', 'flashsocket'] ,
-     withCredentials: true
-    }) 
-    
+ 
 export const pusher = new Pusher("6f320e55606c338bdbf7", {
     cluster: 'ap2'
   });

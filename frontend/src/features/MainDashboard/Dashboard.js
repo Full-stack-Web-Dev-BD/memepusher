@@ -4,7 +4,7 @@ import DashboardMainContent from './DashboardMainContent/DashboardMainContent'
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar'
 import queryString from 'query-string';
 import "./dashboard.css"
-import { baseURL, pusher, socket } from '../../utils/constant';
+import { baseURL, pusher } from '../../utils/constant';
 import axios from 'axios'
 import jwtDecode from 'jwt-decode';
 
@@ -77,7 +77,7 @@ export class Dashboard extends Component {
           <DashboardSidebar state={this.state} />
         </div>
         <div className='dashboard_main_content'>
-          <DashboardMainContent state={this.state} socket={socket} />
+          <DashboardMainContent state={this.state}  />
         </div>
         <div className='dashboard_chat'>
           <DashboardChat sendSMS={this.sendSms} state={this.state} />

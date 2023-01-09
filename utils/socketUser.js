@@ -27,9 +27,7 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
                 }
                 room.perticipant = [...updateRoomPerticipant]
                 room.save()
-                    .then(newList => {
-                        // socket.broadcast.to(user.room).emit('roomUpdate', { room: newList });
-                        // socket.emit('roomUpdate', { room: newList });
+                    .then(newList => { 
                         console.log("Room update sent")
                         PusherServer.trigger("ROOM", "roomUpdate", {
                             roomName:room,
@@ -40,9 +38,7 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
                 console.log("createing new room ")
                 new Room({ roomName: user.room, perticipant: [user], topic: topic, session: [], owner: owner })
                     .save()
-                    .then(newRoom => {
-                        // socket.broadcast.to(user.room).emit('roomUpdate', { room: newRoom });
-                        // socket.emit('roomUpdate', { room: newRoom });
+                    .then(newRoom => { 
                         PusherServer.trigger("ROOM", "roomUpdate", {
                             roomName:room,
                             room:newRoom

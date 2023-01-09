@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./dashboardMainContent.css"
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { baseURL, pusher, randomNum, socket, utilActiveDB, utilSelectedInput } from '../../../utils/constant';
+import { baseURL, pusher,  utilActiveDB, utilSelectedInput } from '../../../utils/constant';
 import ProfileBox from '../../Components/ProfileBox/ProfileBox';
 import Countdown, { } from 'react-countdown'
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import { useRecoilState } from 'recoil';
 import queryString from 'query-string'
 import VoteModal from './VoteModal';
 import { getUserFromToken } from '../../../Util';
-import WaitingSlider from '../../Components/WaitingSlider';
+import WaitingSlider from '../../Components/WaitingSlider'; 
 
 
 
@@ -43,18 +43,22 @@ const DashboardMainContent = ({ state }) => {
   const [isVoted, setIsVoted] = useState(false)
   const ROOM = pusher.subscribe('ROOM');
 
-  
+
   useEffect(() => {
-    ROOM.bind('roundPushBack', (data)=> { 
-      console.log("roundpushback=>", data)
-      console.log(state.room)
-      if (data.room==myRoom.roomName){
-      toast.success("A new Round has been  Created ")
-      console.log("initializing db again ")
-      initDashboardContent()
+    ROOM.bind('roundPushBack', (data) => {
+      const { name, room, topic } = queryString.parse(window.location.search);
+      console.log(room)
+      if (data.room == room) {
+        toast.success("A new Round has been  Created ")
+        console.log("initializing db again ")
+        initDashboardContent()
       }
-    });  
+    });
     initDashboardContent()
+    
+    window.addEventListener('beforeunload', (event) => { 
+      alert("hellow closing ")
+    });
   }, [])
   const initDashboardContent = () => {
     var tokenuser = jwtDecode(window.localStorage.getItem("meme_token"))
@@ -183,10 +187,10 @@ const DashboardMainContent = ({ state }) => {
         if (resp.data?.status) {
           console.log("a new round created and roundpush  by socket ")
 
-          axios.post(`${baseURL}/socket/roundPush`, {room:myRoom.roomName})
-          .then(resp=>{
-            console.log("roundPush =>",resp.data)
-          })
+          axios.post(`${baseURL}/socket/roundPush`, { room: myRoom.roomName })
+            .then(resp => {
+              console.log("roundPush =>", resp.data)
+            })
           // socket.emit("roundPush", { room: myRoom.roomName, })
         } else {
           toast.error(resp.data.message)
