@@ -25,14 +25,14 @@ const CommonHeader = ({ content, pn }) => {
                                     <div className='header_right_content text-right'>
                                         {
                                             getUserFromToken() ?
-                                                <Link to="/account">
+                                                <Link to={`/account${window.location.search}`}>
                                                     <button className='btn log_in_btn'>Account</button>
                                                 </Link> :
                                                 <div className='header_home_right_content d-inline'>
-                                                    <Link to="/register">
+                                                    <Link to={`/register${window.location.search}`}>
                                                         <button className='btn sing_up_btn mr-3'>SING UP</button>
                                                     </Link>
-                                                    <Link to="/">
+                                                    <Link to={`/${window.location.search}`}>
                                                         <button className='btn log_in_btn'>LOG IN</button>
                                                     </Link>
                                                 </div>

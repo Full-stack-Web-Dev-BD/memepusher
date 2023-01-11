@@ -4,6 +4,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  useNavigate,
 } from "react-router-dom";
 import { toast, ToastContainer } from 'react-toastify';
 import Home from './features/Home/Home';
@@ -19,15 +20,22 @@ import { useRecoilState } from 'recoil';
 import { appState } from './states/appState';
 import axios from 'axios';
 import { baseURL } from './utils/constant';
-import Success from './features/PaymentSuccess/Success'; 
+import Success from './features/PaymentSuccess/Success';
 import { gapi } from 'gapi-script';
 function App() {
   const [user, setuser] = useState()
   const [getAppState, setAppState] = useRecoilState(appState)
-  const clientId = '777503944063-5mssnj41ranrib5alak109bhr2h3csl7.apps.googleusercontent.com'
+  const clientId = '777503944063-5mssnj41ranrib5alak109bhr2h3csl7.apps.googleusercontent.com' 
 
 
   useEffect(() => {
+    var pathname = window.location.pathname    
+    if(pathname=="/success"||pathname=="/home"||pathname=="/dashboard"||pathname=="/account"){
+      if(!getUserFromToken()){
+        console.log("you should login ") 
+        window.location.href=`/register${window.location.search}`
+      }
+    }
     setuser(getUserFromToken())
     if (getUserFromToken()) {
       axios.get(`${baseURL}/api/user/find/${getUserFromToken()._id}`)
@@ -49,6 +57,7 @@ function App() {
     } else {
       setAppState({ ...getAppState, loaded: true })
     }
+    
   }, [])
   //google auth conf
   useEffect(() => {
@@ -60,7 +69,7 @@ function App() {
     };
     gapi.load('client:auth2', initClient);
   });
-  
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -72,16 +81,12 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/how-to-play" element={<HowToPlay />} />
-              {
-                user ?
-                  <>
-                    {/* <Route path="/topic" element={<Topic />} /> */}
-                    <Route path="/success" element={<Success />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/account" element={<Account />} />
-                  </> : ''
-              }
+              {/* <Route path="/topic" element={<Topic />} /> */}
+              <Route path="/success" element={<Success />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/account" element={<Account />} />
+
             </Routes> :
             <img className='loading_gif' src='/assets/loading.gif' />
         }

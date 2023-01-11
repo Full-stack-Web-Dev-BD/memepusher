@@ -39,7 +39,7 @@ const Register = () => {
       .then(res => {
         toast.success("Registration Success ")
         setTimeout(() => {
-          window.location.href = '/'
+          window.location.href = `/${window.location.search}`
         }, 2000);
       })
       .catch(err => {
@@ -64,7 +64,7 @@ const Register = () => {
           toast.warning("Your Account Already Exist  , Please Login ")
           toast.info("Redirecting on Login Page ")
           setTimeout(() => {
-            window.location.href = "/"
+            window.location.href = `/${window.location.search}`
           }, 2500);
         }
       })
@@ -122,40 +122,7 @@ const Register = () => {
                       onFailure={e => onFailure(e)}
                       cookiePolicy={'single_host_origin'}
                     />
-
-{/* <FacebookLogin
-    appId="486721986534201"
-    autoLoad={false}
-    fields="name,email,picture"
-    callback={e=>console.log("facebook response",e)}
-    cssClass="my-facebook-button-class"
-    icon="fa-facebook"
-  /> */}
-                    {/* <FacebookLogin
-                      appId="486721986534201"
-                      autoLoad={false}
-                      fields="name,email,picture"
-                      onClick={e => onFBSuccess(e)}
-                      callback={e => onFBSuccess(e)}
-                      icon={<FacebookOutlinedIcon style={{ color: 'white', fontSize: '22px' }} />}
-                      textButton="Signup With Facebook"
-                      size="small btn fb_btn"
-                    /> */}
-
-
-                    {/* <img
-                      onClick={linkedInLogin}
-                      src={linkedin}
-                      alt="Sign in with Linked In"
-                      style={{ maxWidth: '180px', cursor: 'pointer' }}
-                    /> */}
-                    {/*  
-                    {/* 86ssuzfdrq8qeo */}
-                    {/* <button className='btn register_social_btn fb_login_btn'> <span><FacebookOutlinedIcon style={{ color: 'white', fontSize: '22px' }} /></span> Login With Facebook</button><br /> */}
-                    {/* <button className='btn register_social_btn google_login_btn'> <span style={{ opacity: '0' }}><YouTubeIcon style={{ color: 'white', fontSize: '22px' }} /> </span>Login with Google</button><br /> */}
-                    {/* <button className='btn register_social_btn twitter_login_btn'> <span><TwitterIcon style={{ color: 'white', fontSize: '22px' }} /></span> Login With Twitter</button><br /> */}
-
-                    <p className=' text-white mt-4'>Already have account , <Link to="/" >Go to Login</Link>  </p>
+                    <p className=' text-white mt-4'>Already have account , <Link to={`/${window.location.search}`} >Go to Login</Link>  </p>
                   </div>
                   <div className='register_sm_or'>
                     <span>OR</span>

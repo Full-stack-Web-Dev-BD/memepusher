@@ -5,6 +5,8 @@ import { getUserFromToken } from '../../Util'
 import { baseURL } from '../../utils/constant'
 import CommonHeader from '../Components/Header/PageHeader'
 import "./login.css"
+import queryString from 'query-string'
+
 const Login = () => {
     const [email, setEmail] = useState()
     const [password, setpassword] = useState()
@@ -23,7 +25,11 @@ const Login = () => {
         })
             .then(res => {
                 setTimeout(() => {
-                    window.location.href = "/home"
+                    // window.location.href = "/home"
+                    const { name, room, topic } = queryString.parse(window.location.search);
+                    if (name && room && topic) {
+                        return window.location.href = `/dashboard${window.location.search}`
+                    }
                 }, 2000);
                 window.localStorage.setItem("meme_token", res.data.token)
                 toast.success("Login Success , Redirecting to Account !")
