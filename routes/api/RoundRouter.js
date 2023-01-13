@@ -178,6 +178,7 @@ RoundRouter.post("/upload", upload.single('file'), (req, res) => {
         })
 })
 RoundRouter.post('/vote', (req, res) => {
+    console.log('vote ',req.body)
     User.findById({ _id: req.body.userID })
         .then(user => {
             if (user) {
@@ -185,19 +186,31 @@ RoundRouter.post('/vote', (req, res) => {
                     return res.json({ message: "Paid Amount required !!", status: false, error: { message: "Paid Amount requried" } })
                 }
                 var error = {}
+
+
                 if (user.balance.paidEsterEggs < req.body.paidEsterEggs) {
-                    error.paidEsterEggs = "Ester Eggs Sufficient Balance !"
+                    error.paidEsterEggs = "Paid Ester Eggs Sufficient Balance !"
+                }
+                if (user.balance.freeEsterEggs < req.body.freeEsterEggs) {
+                    error.freeEsterEggs = "Free Ester Eggs Sufficient Balance !"
                 }
 
                 if (user.balance.paidRottenEggs < req.body.paidRottenEggs) {
-                    error.paidRottenEggs = "Rotten Eggs Sufficient Balance !"
+                    error.paidRottenEggs = "Paid Rotten Eggs Sufficient Balance !"
+                }
+                
+                if (user.balance.freeRottenEggs < req.body.freeRottenEggs) {
+                    error.freeRottenEggs = "Free Rotten Eggs Sufficient Balance !"
                 }
                 if (Object.keys(error).length > 0) {
                     return res.json({ message: "Not have Enough Balance", status: false, error: error })
                 } else {
                     var updatedUser = user
                     updatedUser.balance.paidEsterEggs = updatedUser.balance.paidEsterEggs - req.body.paidEsterEggs
+                    updatedUser.balance.freeEsterEggs = updatedUser.balance.freeEsterEggs - req.body.freeEsterEggs
                     updatedUser.balance.paidRottenEggs = updatedUser.balance.paidRottenEggs - req.body.paidRottenEggs
+                    updatedUser.balance.freeRottenEggs = updatedUser.balance.freeRottenEggs - req.body.freeRottenEggs
+
                     User.findByIdAndUpdate(req.body.userID, updatedUser, { new: true })
                         .then(balanceUpdate => {
                             Round.findOne({ _id: req.body.id })

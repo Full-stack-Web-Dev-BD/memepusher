@@ -31,9 +31,8 @@ function App() {
   useEffect(() => {
     var pathname = window.location.pathname    
     if(pathname=="/success"||pathname=="/home"||pathname=="/dashboard"||pathname=="/account"){
-      if(!getUserFromToken()){
-        console.log("you should login ") 
-        window.location.href=`/register${window.location.search}`
+      if(!getUserFromToken()){ 
+        window.location.href=`/${window.location.search}`
       }
     }
     setuser(getUserFromToken())

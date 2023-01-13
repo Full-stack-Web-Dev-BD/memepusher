@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 import { getUserFromToken } from "../Util"; 
 import Pusher from "pusher-js";
 
-export const baseURL = "http://localhost:4000"  
+// export const baseURL = "http://localhost:4000"  
 // export const baseURL= "http://89.116.225.104:4000"
-// export const baseURL= "https://memechallenge.me"
+export const baseURL= "https://memechallenge.me"
 
 
  

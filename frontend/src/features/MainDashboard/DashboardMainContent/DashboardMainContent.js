@@ -738,7 +738,7 @@ const DashboardMainContent = ({ state }) => {
                   }
                 </div>
               </div>
-              {
+              {/* {
                 selectedInput != utilSelectedInput.player ?
                   <div className='p_search_bar'>
                     <div>
@@ -753,7 +753,7 @@ const DashboardMainContent = ({ state }) => {
                       <input className='form-control' />
                     </div>
                   </div> : ''
-              }
+              } */}
             </div>
           </div>
         </div>

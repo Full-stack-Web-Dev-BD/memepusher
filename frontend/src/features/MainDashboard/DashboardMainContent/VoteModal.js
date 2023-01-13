@@ -26,7 +26,9 @@ export default function VoteModal({ activeMeme, setVoted, doVote }) {
         e.preventDefault()
         var obj = {
             paidEsterEggs: paidEsterEggsCount,
-            paidRottenEggs: paidRottenEggsCount
+            paidRottenEggs: paidRottenEggsCount,
+            freeEsterEggs:freeEsterEggsCount,
+            freeRottenEggs:freeRottenEggsCount
         }
         doVote(obj)
         setVoted(true)

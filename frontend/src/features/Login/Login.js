@@ -29,6 +29,8 @@ const Login = () => {
                     const { name, room, topic } = queryString.parse(window.location.search);
                     if (name && room && topic) {
                         return window.location.href = `/dashboard${window.location.search}`
+                    }else{
+                        return window.location.href="/home"
                     }
                 }, 2000);
                 window.localStorage.setItem("meme_token", res.data.token)
