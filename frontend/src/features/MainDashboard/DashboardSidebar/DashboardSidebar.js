@@ -32,7 +32,7 @@ const DashboardSidebar = ({ state }) => {
                     <button className='btn yellow_btn'>PLAYERS</button>
                     <InviteModal />
                 </div>
-                <div className='player_list mt-5'>
+                <div className='player_list mt-5'> 
                     {
                         state.roomDetails.perticipant?.map((pert, i) => (
                             <div key={i} className='db_single_player d-flex' id={`playerID${(i + 1)}`} onClick={e => setActivePlayer('playerID' + (i + 1))}>

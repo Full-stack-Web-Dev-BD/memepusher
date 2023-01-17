@@ -19,6 +19,7 @@ RoomRouter.get('/:roomName', async (req, res) => {
 RoomRouter.post('/find', async (req, res) => {
     if (!req.body.roomName) return res.json({ message: "roomName is requried to find a room " }).status(400)
     var roomName = req.body.roomName.toLowerCase()
+    console.log("findind  details of room>>>>>", roomName)
     var room = await Room.findOne({ roomName: roomName })
     if (room) {
         res.json(room)

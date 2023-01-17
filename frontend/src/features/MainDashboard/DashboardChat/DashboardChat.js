@@ -59,11 +59,11 @@ const DashboardChat = ({ state, sendSMS }) => {
                             <p>Free</p>
                             <hr />
                             <img src='/assets/RottenEgg.png' />
-                            <b>10</b>
+                            <b> {getAppState.user.balance.freeEsterEggs} </b>
                           </div>
                           <div>
                             <img src='/assets/EasterEgg.png' />
-                            <b>10</b>
+                            <b>{getAppState.user.balance.freeEsterEggs} </b>
                           </div>
                         </div>                    </div>
                       <a href='/account'>

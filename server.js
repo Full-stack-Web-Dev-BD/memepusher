@@ -6,14 +6,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const UserRoutes = require('./routes/api/users')
 const morgan = require('morgan')
-const cors = require('cors')
-const {
-	addUser,
-	removeUser,
-	getUser,
-	getUsersInRoom,
-	socketUsers
-} = require('./utils/socketUser');
+const cors = require('cors') 
 const RoomRouter = require('./routes/api/Room');
 const Chat = require('./models/Chat');
 const ChatRouter = require('./routes/api/Chat');
@@ -69,44 +62,7 @@ app.get("/files", (req, res) => {
 	fs.readdir("./uploads", (err, files) => {
 		return res.json(files)
 	})
-})
-// io.on('connect', (socket) => {
-	// socket.on('join', ({ name, room, topic, owner, pp }, callback) => { 
-	// 	const { error, user } = addUser({ id: socket.id, name, room, socket, topic, owner: owner, pp: pp });
-	// 	if (error) return callback(error);
-	// 	socket.join(user.room);
-	// 	socket.emit('message', { sms: { user: 'admin', text: `${user.userName}, Welcome Back to room ${user.room}.`, uid: socket.id }, users: socketUsers() });
-	// 	socket.broadcast.to(user.room).emit('message', { sms: { user: 'admin', text: `${user.userName} has joined!` }, users: socketUsers() });
-	// 	io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-	// });
-// 	socket.on('sendMessage', async (data) => {
-// 		const user = getUser(socket.id);
-// 		const userDetails = await User.findOne({ _id: data.uid })
-// 		var sms = { user: user.userName, text: data.message, uid: socket.id }
-// 		await new Chat({ room: user.room, sms, user: userDetails })
-// 			.save()
-// 		io.to(user.room).emit('message', { sms, user: userDetails ? userDetails : {} });
-// 	});
-// 	socket.on('roundPush', data => {
-// 		console.log(data)
-// 		socket.emit('roundPushBack', { ...data });
-// 		socket.broadcast.to(data.room).emit('roundPushBack', { ...data });
-// 	})
-// 	socket.on('disconnect', () => {
-// 		const user = removeUser(socket.id);
-// 		console.log("User Disconnected ")
-// 		if (user) {
-// 			io.to(user.room).emit('message', { sms: { user: 'admin', text: `${user.userName}, Left from  Room ${user.room}.` } });
-// 			io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-// 		}
-// 	})
-// });
-
-
-
-
-
-
+}) 
 
 app.use(express.static("uploads"));
 // app.get('/', (req, res) => {

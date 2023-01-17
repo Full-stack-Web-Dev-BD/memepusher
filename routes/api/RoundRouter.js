@@ -222,8 +222,8 @@ RoundRouter.post('/vote', (req, res) => {
                                     round.perticipants[index].vote = {
                                         paidEsterEggsCount: parseInt(round.perticipants[index].vote.paidEsterEggsCount) + req.body.paidEsterEggs ? parseInt(req.body.paidEsterEggs) : 0,
                                         paidRottenEggsCount: parseInt(round.perticipants[index].vote.paidRottenEggsCount) + req.body.paidRottenEggs ? parseInt(req.body.paidRottenEggs) : 0,
-                                        // freeEsterEggsCount: parseInt(round.perticipants[index].vote.freeEsterEggsCount) + parseInt(req.body.freeEsterEggsCount),
-                                        // freeRottenEggsCount: parseInt(round.perticipants[index].vote.freeRottenEggsCount) + parseInt(req.body.freeRottenEggsCount),
+                                        freeEsterEggsCount: parseInt(round.perticipants[index].vote.freeEsterEggsCount) +  req.body.freeEsterEggs? parseInt(req.body.freeEsterEggsCount):0,
+                                        freeRottenEggsCount: parseInt(round.perticipants[index].vote.freeRottenEggsCount) + req.body.freeRottenEggs? parseInt(req.body.freeRottenEggsCount):0,
                                     }
                                     round.save()
                                         .then(resp => {

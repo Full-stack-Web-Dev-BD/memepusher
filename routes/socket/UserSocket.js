@@ -6,6 +6,7 @@ const { addUser, socketUsers, getUser } = require('../../utils/socketUser');
 
 
 UserSocket.post('/join', (req, res) => {
+    console.log("req body is ", req.body)
     const { name, room, topic, owner, pp } = req.body;
     console.log(req.body)
     const { error, user } = addUser({ id: owner, name, room, topic, owner, pp });
@@ -34,6 +35,7 @@ UserSocket.post('/sendMessage', async (req, res) => {
 }) 
 
 UserSocket.post('/roundPush', (req, res)=>{
+    console.log('a new round created in round', req.body)
     PusherServer.trigger("ROOM", "roundPushBack", { message:"A new Round has been  created !!",  ...req.body });   
 })
 module.exports = UserSocket;

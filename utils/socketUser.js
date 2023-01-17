@@ -9,7 +9,7 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
     room = room.trim().toLowerCase();
     topic = topic.trim().toLowerCase();
  
-    console.log(name, room)
+    console.log('name room is .......', name, room)
     if (!name || !room)  { 
         console.log('Username and room are required')
         return {error: 'Username and room are required.'} 
@@ -17,10 +17,10 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
     const user = { id, userName: name, room, pp: pp, };
     Room.findOne({ roomName: user.room })
         .then(room => {
-            if (room) {
-                console.log("if room ")
+            if (room) { 
                 var updateRoomPerticipant = [...room.perticipant]
-                if (updateRoomPerticipant.findIndex((obj) => obj.userName == user.userName) !== -1) {
+                console.log('if exist', updateRoomPerticipant , user)
+                if (updateRoomPerticipant.findIndex((obj) => obj.id == user.id) !== -1) {
                     console.log("User Existing ")
                 } else {
                     updateRoomPerticipant.push(user)
