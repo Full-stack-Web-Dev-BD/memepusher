@@ -564,7 +564,7 @@ const DashboardMainContent = ({ state }) => {
             <div className='playing_tools mr-5'>
               <div className='playing_tool d-flex '>
                 <div className={`pl_icon_box ${selectedInput == utilSelectedInput.img ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.img)} >
-                  <img src='/assets/image.svg' />
+                  <img src='/assets/loadedimage.svg' />
                 </div>
                 <div className={`pl_icon_box ${selectedInput == utilSelectedInput.gif ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.gif)}>
                   <img src='/assets/gif.svg' />
