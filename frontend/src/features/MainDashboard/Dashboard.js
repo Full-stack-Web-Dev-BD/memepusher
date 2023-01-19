@@ -38,10 +38,10 @@ export class Dashboard extends Component {
       })
 
     ROOM.bind('message', (data) => {
-
       var params = queryString.parse(window.location.href)
       axios.get(`${baseURL}/api/room/${params.room}`)
         .then(res => {
+          console.log("hello")
           if (data.room == res.data._id) {
             if (!this.state.userID) {
               this.setState({ ...this.state, uid: data.sms?.uid, chatHistory: [...this.state.chatHistory, { sms: data.sms, user: data.user }] })
@@ -57,12 +57,12 @@ export class Dashboard extends Component {
         })
     });
     ROOM.bind('roomUpdate', (data) => {
+      console.log("room updated  is  dong ", data.room)
       var params = queryString.parse(window.location.href)
       axios.get(`${baseURL}/api/room/${params.room}`)
         .then(res => {
-          if (data.room == res.data._id) {
+          if (data.room._id == res.data._id) {
             this.setState({ ...this.state, roomDetails: data.room })
-            console.log("get from  server room update =======", data)
           }
         })
         .catch(err => {
@@ -76,7 +76,6 @@ export class Dashboard extends Component {
   getRoom = () => {
     axios.post(`${baseURL}/api/room/find`, { roomName: this.state.room })
       .then(resp => {
-        console.log("get data roo>>>>>>", resp.data)
         if (Object.keys(resp.data).length === 0) {
           return
         } else {
