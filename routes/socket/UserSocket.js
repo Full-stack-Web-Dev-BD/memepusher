@@ -18,7 +18,7 @@ UserSocket.post('/join', (req, res) => {
     res.json("joining")
 })
 UserSocket.post('/sendMessage', async (req, res) => {
-    const { message, uid } = req.body;
+    const { message, uid,roomID } = req.body;
     const user = getUser(uid);
     const userDetails = await User.findOne({ _id: uid })
     console.log("user is ", user)
@@ -28,7 +28,8 @@ UserSocket.post('/sendMessage', async (req, res) => {
     PusherServer.trigger("ROOM", "message", {
         roomName: user?.room,
         sms,
-        user: userDetails ? userDetails : {}
+        user: userDetails ? userDetails : {},
+        roomID
     });
     console.log("message sent", req.body)
     res.json({message:"Message Sent"})

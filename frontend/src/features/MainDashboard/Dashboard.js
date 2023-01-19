@@ -19,14 +19,21 @@ export class Dashboard extends Component {
     userID: '',
     roomDetails: {},
     topic: '',
-    tokenUser: {}
+    tokenUser: {},
+    roomID: '',
   }
   async componentDidMount() {
     const ROOM = pusher.subscribe('ROOM');
+    var params = queryString.parse(window.location.href)
+    var fetchRoomDetails = await axios.get(`${baseURL}/api/room/${params.room}`)
+    this.setState({ ...this.state, roomID: fetchRoomDetails.data._id })
+
 
     var user = jwtDecode(window.localStorage.getItem("meme_token"))
     const { name, room, topic } = queryString.parse(window.location.search);
     if (!name || !room) return window.location.href = '/'
+
+
     var dbChatHistory = await axios.get(`${baseURL}/api/chat/${room}`)
     this.setState({ ...this.state, name: user.name, room: room, topic: topic, tokenUser: user, chatHistory: dbChatHistory.data })
     axios.post(`${baseURL}/socket/join`, { name: user.name, room, topic, owner: user._id, pp: user.pp })
@@ -38,40 +45,21 @@ export class Dashboard extends Component {
       })
 
     ROOM.bind('message', (data) => {
-      var params = queryString.parse(window.location.href)
-      axios.get(`${baseURL}/api/room/${params.room}`)
-        .then(res => {
-          console.log("hello")
-          if (data.room == res.data._id) {
-            if (!this.state.userID) {
-              this.setState({ ...this.state, uid: data.sms?.uid, chatHistory: [...this.state.chatHistory, { sms: data.sms, user: data.user }] })
-              this.getRoom()
-            } else {
-              this.setState({ ...this.state, chatHistory: [...this.state.chatHistory, { sms: data.sms }] })
-              this.getRoom()
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      if (data.roomID == this.state.roomID) {
+        if (!this.state.userID) {
+          this.setState({ ...this.state, uid: data.sms?.uid, chatHistory: [...this.state.chatHistory, { sms: data.sms, user: data.user }] })
+          this.getRoom()
+        } else {
+          this.setState({ ...this.state, chatHistory: [...this.state.chatHistory, { sms: data.sms }] })
+          this.getRoom()
+        }
+      }
     });
     ROOM.bind('roomUpdate', (data) => {
-      console.log("room updated  is  dong ", data.room)
-      var params = queryString.parse(window.location.href)
-      axios.get(`${baseURL}/api/room/${params.room}`)
-        .then(res => {
-          if (data.room._id == res.data._id) {
-            this.setState({ ...this.state, roomDetails: data.room })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      if (data.room._id == this.state.roomID) {
+        this.setState({ ...this.state, roomDetails: data.room })
+      }
     });
-    // ROOM.bind('roundPushBack', (data) => {
-    //   console.log("round created ",  data)
-    // })
   }
   getRoom = () => {
     axios.post(`${baseURL}/api/room/find`, { roomName: this.state.room })
@@ -87,7 +75,7 @@ export class Dashboard extends Component {
   }
 
   sendSms = (sms) => {
-    axios.post(`${baseURL}/socket/sendMessage`, { message: sms, uid: this.state.tokenUser._id })
+    axios.post(`${baseURL}/socket/sendMessage`, { message: sms, uid: this.state.tokenUser._id, roomID: this.state.roomID })
       .then(resp => {
         console.log("sendSMS-sendMessage", resp.data)
       })
@@ -96,7 +84,6 @@ export class Dashboard extends Component {
   render() {
     return (
       <div className='dashboard_container '>
-        {/* <button onClick={e => console.log(this.state)}>  log </button> */}
         <div className='dashboard_sidebar'>
           <DashboardSidebar state={this.state} />
         </div>
