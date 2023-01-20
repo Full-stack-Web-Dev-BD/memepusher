@@ -14,12 +14,7 @@ const DashboardChat = ({ state, sendSMS }) => {
     sendSMS(Sms);
     setSms('')
   }
-  const [accountDialog, setAccountDialog] = useState(false)
-  // useEffect(() => {
-  //   window.onbeforeunload = function (event) {
-  //     return window.confirm("Confirm refresh");
-  //   };
-  // }, [])
+  const [accountDialog, setAccountDialog] = useState(false) 
   const scroll_bottom = () => {
     var db_chat_box = document.getElementById("db_chat_box")
     db_chat_box.scrollTo = db_chat_box.scrollHeight;

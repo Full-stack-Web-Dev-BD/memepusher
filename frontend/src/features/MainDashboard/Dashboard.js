@@ -23,6 +23,8 @@ export class Dashboard extends Component {
     roomID: '',
   }
   async componentDidMount() {
+
+
     const ROOM = pusher.subscribe('ROOM');
     var params = queryString.parse(window.location.href)
     var fetchRoomDetails = await axios.get(`${baseURL}/api/room/${params.room}`)
@@ -45,6 +47,7 @@ export class Dashboard extends Component {
       })
 
     ROOM.bind('message', (data) => {
+      console.log("accepted  sms checcking  room ... ", data, this.state)
       if (data.roomID == this.state.roomID) {
         if (!this.state.userID) {
           this.setState({ ...this.state, uid: data.sms?.uid, chatHistory: [...this.state.chatHistory, { sms: data.sms, user: data.user }] })

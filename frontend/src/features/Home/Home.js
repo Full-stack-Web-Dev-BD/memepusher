@@ -6,7 +6,6 @@ import "./home.css"
 import axios from 'axios';
 import { baseURL } from '../../utils/constant';
 import { toast } from 'react-toastify'
-import queryString from 'query-string'
 import { appState } from '../../states/appState';
 import { useRecoilState } from 'recoil';
 
@@ -30,16 +29,25 @@ const Home = () => {
   }
   const submitHandler = (e) => {
     e.preventDefault()
-    if (!getAppState.loaded) return toast.error("Page Still Loading")
-    axios.get(`${baseURL}/api/room/${room}`)
-      .then(resp => {
-        console.log(resp)
-        if (Object.keys(resp.data).length == 0) {
-          window.location.href = `/dashboard?name=${getAppState.user.name}&room=${room}&topic=${topic}`
-        } else {
-          toast.error("Room existing ")
-        }
+    if (room && topic) {
+      axios.post(`${baseURL}/api/room`, {
+        roomName: room,
+        topic: topic,
+        owner: getAppState.user._id
       })
+        .then(resp => {
+          console.log('crated room ', resp)
+          setAvailableRoom(resp.data.rooms)
+          toast.success("Room created  successfull  !!")
+          setRoom('')
+          setTopic('')
+        })
+        .catch(err=>{
+          console.log(err)
+        })
+    } else {
+      toast.error("Room name and topic  is required !!")
+    } 
   }
   const search = (e) => {
     e.preventDefault()
@@ -54,7 +62,6 @@ const Home = () => {
         }
       })
   }
-  const checkRoom = () => { }
   return (
     <div className='home_page'>
       <Header content="loginRegister" />
@@ -92,7 +99,7 @@ const Home = () => {
                         </div>
                       </div>
                       <div className='mt-4 text-center'>
-                        <button onClick={e => checkRoom()} type='submit' className='btn home_btn_play'> Create & PLAY </button>
+                        <button type='submit' className='btn home_btn_play'> Create Room  </button>
                       </div>
                     </form>
                   </div>

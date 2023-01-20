@@ -81,7 +81,6 @@ const DashboardMainContent = ({ state }) => {
       })
   }
   const getActiveRound = () => {
-    var tokenuser = jwtDecode(window.localStorage.getItem("meme_token"))
     var params = queryString.parse(window.location.href)
     axios.get(`${baseURL}/api/room/${params.room}`)
       .then(res => {
@@ -95,6 +94,7 @@ const DashboardMainContent = ({ state }) => {
         axios.post(`${baseURL}/api/round/active-round`, { room: res.data?.roomName })
           .then(resp => {
             if (resp.data) {
+              console.log("active round   ",  resp.data)
               setActiveRound(resp.data)
             }
             if (resp.data?.status) {
@@ -147,11 +147,15 @@ const DashboardMainContent = ({ state }) => {
   const getMyRoom = () => {
     var params = queryString.parse(window.location.href)
     axios.get(`${baseURL}/api/room/${params.room}`)
-      .then(res => {
-        if (!res.data.date) {
-          return getMyRoom()
+      .then(res => { 
+        if (Object.keys(res.data).length === 0) {
+          toast.info("This  room no longer available , pleaes  join in  a valid room !!")
+          setTimeout(() => {
+            window.location.href='/'
+          }, 3000);
+        }else{
+          setMyRoom(res.data)
         }
-        setMyRoom(res.data)
       })
       .catch(err => {
         console.log(err)

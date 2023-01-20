@@ -34,17 +34,7 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
                             room:newList
                         });
                     })
-            } else {
-                console.log("createing new room ")
-                new Room({ roomName: user.room, perticipant: [user], topic: topic, session: [], owner: owner })
-                    .save()
-                    .then(newRoom => { 
-                        PusherServer.trigger("ROOM", "roomUpdate", {
-                            roomName:room,
-                            room:newRoom
-                        });
-                    })
-            }
+            }  
         })
         .catch(err => {
             console.log(err)
