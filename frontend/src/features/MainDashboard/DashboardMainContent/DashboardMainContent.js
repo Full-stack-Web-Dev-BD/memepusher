@@ -150,9 +150,10 @@ const DashboardMainContent = ({ state }) => {
       .then(res => { 
         if (Object.keys(res.data).length === 0) {
           toast.info("This  room no longer available , pleaes  join in  a valid room !!")
-          setTimeout(() => {
-            window.location.href='/'
-          }, 3000);
+          console.log(res.data)
+          // setTimeout(() => {
+          //   window.location.href='/'
+          // }, 3000);
         }else{
           setMyRoom(res.data)
         }

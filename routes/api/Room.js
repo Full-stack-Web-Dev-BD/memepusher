@@ -7,7 +7,6 @@ RoomRouter.post('/', (req, res) => {
         new Room({ roomName: req.body.roomName, perticipant: [], topic: req.body.topic, session: [], owner: req.body.owner })
             .save()
             .then(async newRoom => {
-                console.log("new room created ", newRoom)
                 var allRoom = await Room.find()
                 res.json({ message: "Room is created ! ", rooms: allRoom.reverse() })
             })
@@ -24,9 +23,11 @@ RoomRouter.get('/', async (req, res) => {
     res.json(rooms.reverse())
 })
 
-RoomRouter.get('/:roomName', async (req, res) => {
-    var roomName = req.params.roomName.toLowerCase()
-    var room = await Room.findOne({ roomName: roomName })
+RoomRouter.get('/:roomID', async (req, res) => {
+    
+    var roomID = req.params.roomID.toLowerCase()
+    var room = await Room.findById(roomID)
+    console.log('check room ', room)
     if (room) {
         res.json(room)
     } else {
