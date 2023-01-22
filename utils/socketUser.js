@@ -4,20 +4,20 @@ const Room = require("../models/Room");
 //Array of users
 const users = [];
 
-const addUser = ({ id, name, room,  topic, owner, pp }) => {
+const addUser = ({ id, name, room, roomID, topic, owner, pp }) => {
     name = name.trim().toLowerCase();
     room = room.trim().toLowerCase();
     topic = topic.trim().toLowerCase();
  
-    console.log('name room is .......', name, room)
     if (!name || !room)  { 
         console.log('Username and room are required')
         return {error: 'Username and room are required.'} 
     }; 
     const user = { id, userName: name, room, pp: pp, };
-    Room.findOne({ roomName: user.room })
+    console.log('findind foom with >>>>>>>', roomID)
+    Room.findById(roomID)
         .then(room => {
-            if (room) { 
+            console.log('room finded  ', room )
                 var updateRoomPerticipant = [...room.perticipant]
                 console.log('if exist', updateRoomPerticipant , user)
                 if (updateRoomPerticipant.findIndex((obj) => obj.id == user.id) !== -1) {
@@ -34,10 +34,9 @@ const addUser = ({ id, name, room,  topic, owner, pp }) => {
                             room:newList
                         });
                     })
-            }  
         })
         .catch(err => {
-            console.log(err)
+            console.log('err is ', err)
         })
     users.push(user);
     return { user };

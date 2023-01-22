@@ -25,7 +25,7 @@ const Home = () => {
 
   const enterRoom = (room) => {
     if (!getAppState.loaded) return toast.error("Page Loading")
-    window.location.href = `/dashboard?name=${getAppState.user.name}&room=${room.roomName}&topic=${room.topic}`
+    window.location.href = `/dashboard?name=${getAppState.user.name}&room=${room.roomName}&topic=${room.topic}&roomID=${room._id}`
   }
   const submitHandler = (e) => {
     e.preventDefault()

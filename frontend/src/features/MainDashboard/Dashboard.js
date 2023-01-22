@@ -27,20 +27,19 @@ export class Dashboard extends Component {
 
     const ROOM = pusher.subscribe('ROOM');
     var params = queryString.parse(window.location.href)
-    var fetchRoomDetails = await axios.get(`${baseURL}/api/room/${params.room}`)
+    var fetchRoomDetails = await axios.post(`${baseURL}/api/room/findroom`,{roomID:params.roomID})
     this.setState({ ...this.state, roomID: fetchRoomDetails.data._id })
 
 
     var user = jwtDecode(window.localStorage.getItem("meme_token"))
-    const { name, room, topic } = queryString.parse(window.location.search);
+    const { name, room, topic, roomID } = queryString.parse(window.location.search);
     if (!name || !room) return window.location.href = '/'
 
 
     var dbChatHistory = await axios.get(`${baseURL}/api/chat/${room}`)
     this.setState({ ...this.state, name: user.name, room: room, topic: topic, tokenUser: user, chatHistory: dbChatHistory.data })
-    axios.post(`${baseURL}/socket/join`, { name: user.name, room, topic, owner: user._id, pp: user.pp })
+    axios.post(`${baseURL}/socket/join`, { name: user.name, room, roomID, topic, owner: user._id, pp: user.pp })
       .then(resp => {
-        console.log('socket/join', resp)
       })
       .catch(err => {
         console.log(err)

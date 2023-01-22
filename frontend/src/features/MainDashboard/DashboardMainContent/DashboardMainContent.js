@@ -41,23 +41,14 @@ const DashboardMainContent = ({ state }) => {
   const [selectedColor, setSelectedColor] = useState("")
   const [activeMeme, setActiveMEME] = useState({})
   const [isVoted, setIsVoted] = useState(false)
+  const [toolsOpened, setToolsOpened] = useState(true)
+
   const ROOM = pusher.subscribe('ROOM');
 
 
   useEffect(() => {
     ROOM.bind('roundPushBack', (data) => {
-      var params = queryString.parse(window.location.href)
-      axios.get(`${baseURL}/api/room/${params.room}`)
-        .then(res => {
-          console.log('details',  data.room ,res.data._id, data.room ==res.data._id)
-          if (data.room ==res.data._id) {
-            toast.success("A new Round has been  Created ")
-            initDashboardContent()
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      initDashboardContent()
     });
     initDashboardContent()
     window.addEventListener('beforeunload', (event) => {
@@ -73,6 +64,7 @@ const DashboardMainContent = ({ state }) => {
     getMyRoom()
     isRoundExpired()
     getAllFiles()
+    setSelectedInput()
   }
   const getAllFiles = () => {
     axios.get(`${baseURL}/files`)
@@ -82,7 +74,7 @@ const DashboardMainContent = ({ state }) => {
   }
   const getActiveRound = () => {
     var params = queryString.parse(window.location.href)
-    axios.get(`${baseURL}/api/room/${params.room}`)
+    axios.post(`${baseURL}/api/room/findroom`, { roomID: params.roomID })
       .then(res => {
         axios.get(`${baseURL}/api/round/all/${res.data?.owner}`)
           .then(resp => {
@@ -94,7 +86,7 @@ const DashboardMainContent = ({ state }) => {
         axios.post(`${baseURL}/api/round/active-round`, { room: res.data?.roomName })
           .then(resp => {
             if (resp.data) {
-              console.log("active round   ",  resp.data)
+              console.log("active round   ", resp.data)
               setActiveRound(resp.data)
             }
             if (resp.data?.status) {
@@ -146,16 +138,10 @@ const DashboardMainContent = ({ state }) => {
   }
   const getMyRoom = () => {
     var params = queryString.parse(window.location.href)
-    axios.get(`${baseURL}/api/room/${params.room}`)
-      .then(res => { 
-        if (Object.keys(res.data).length === 0) {
-          toast.info("This  room no longer available , pleaes  join in  a valid room !!")
-          setTimeout(() => {
-            window.location.href='/'
-          }, 3000);
-        }else{
-          setMyRoom(res.data)
-        }
+    console.log('params room id is >>>>>>>>>', params.roomID)
+    axios.post(`${baseURL}/api/room/findroom`, { roomID: params.roomID })
+      .then(res => {
+        setMyRoom(res.data)
       })
       .catch(err => {
         console.log(err)
@@ -414,7 +400,7 @@ const DashboardMainContent = ({ state }) => {
               <div className='db_waiting' >
                 <h2>Round Started (<Countdown date={Date.now() + getDiff(activeRound)} renderer={timeReminingRenderer} />) </h2>
                 <div className='text-center'>
-                  <butotn className="btn text_black yellow_btn c_pointer" onClick={e => { setSelectedInput(utilSelectedInput.img) }} >Upload Your MEME ! </butotn>
+                  <butotn className="btn text_black yellow_btn c_pointer" onClick={e => {setToolsOpened(true); setSelectedInput(utilSelectedInput.img) }} >Upload Your MEME ! </butotn>
                 </div>
               </div> : ''
           }
@@ -563,186 +549,197 @@ const DashboardMainContent = ({ state }) => {
             <img src='/assets/text.svg' />
           </div>
         </div>
-        <div className='playing_tool_box '>
-          <div className='tool_box_inner'>
-            <div className='playing_tools mr-5'>
-              <div className='playing_tool d-flex '>
-                <div className={`pl_icon_box ${selectedInput == utilSelectedInput.img ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.img)} >
-                  <img src='/assets/loadedimage.svg' />
-                </div>
-                <div className={`pl_icon_box ${selectedInput == utilSelectedInput.gif ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.gif)}>
-                  <img src='/assets/gif.svg' />
-                </div>
-                <div className={`pl_icon_box ${selectedInput == utilSelectedInput.video ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.video)}>
-                  <img src='/assets/video.svg' />
-                </div>
-                {/* <div className={`pl_icon_box ${selectedInput == utilSelectedInput.layout ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.layout)}>
+        {
+          !toolsOpened ?
+            <div style={{cursor:'pointer'}} onClick={e => setToolsOpened(!toolsOpened)} className='tools_collups'  >
+              <img src='/assets/dbicon.png' />
+            </div> : ''
+        }
+        {
+          toolsOpened ?
+            <div className='playing_tool_box '>
+              <div className='tool_box_inner'>
+                <div className='  '>
+                  <div className='playing_tool  '>
+                    <div className={`pl_icon_box  `} onClick={e => setToolsOpened(!toolsOpened)} >
+                      <img src='/assets/dbicon.png' />
+                    </div>
+                    <div className={`pl_icon_box ${selectedInput == utilSelectedInput.img ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.img)} >
+                      <img src='/assets/loadedimage.svg' />
+                    </div>
+                    <div className={`pl_icon_box ${selectedInput == utilSelectedInput.gif ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.gif)}>
+                      <img src='/assets/gif.svg' />
+                    </div>
+                    <div className={`pl_icon_box ${selectedInput == utilSelectedInput.video ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.video)}>
+                      <img src='/assets/video.svg' />
+                    </div>
+                    {/* <div className={`pl_icon_box ${selectedInput == utilSelectedInput.layout ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.layout)}>
                   <img src='/assets/layout.svg' />
                 </div>
                 <div className={`pl_icon_box ${selectedInput == utilSelectedInput.color ? 'active_pl_icon_box' : ''}`} onClick={e => setSelectedInput(utilSelectedInput.color)}>
                   <img src='/assets/pencil.svg' />
                 </div> */}
-                {/* <div className={`pl_icon_box`}>
+                    {/* <div className={`pl_icon_box`}>
                   <img src='/assets/y_ok.png' style={{ borderRadius: '8px' }} />
                 </div> */}
-              </div>
-            </div>
-            <div className='playing_input '>
-              {
-                activeDB == "round_winner" ?
-                  <div className='_overlay'></div> : ''
-              }
-              <div className='input_show' style={{
-                height: selectedInput == utilSelectedInput.player ? "inherit" : "150px"
-              }}>
-                <div className='input_components pt-2'>
-                  {
-                    selectedInput == utilSelectedInput.img ?
-                      <div>
-                        <div className='input_img_container'>
-                          <div className='sr-only' >
-                            <input onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image); }} type={'file'} accept="image/x-png,image/jpeg" id="image_selector" />
-                          </div>
-                          <div title='Select Image' onClick={e => document.getElementById("image_selector").click()} className='img_placeholder c_pointer'>
-                            <img src='/assets/select_image.png' />
-                          </div>
-                          {
-                            allFiles.map(el => (
-                              <>
-                                {
-                                  detectFileType(el) == "png" ?
-                                    <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className='img_placeholder c_pointer'>
-                                      <img src={`${baseURL}/${el}`} />
-                                    </div> : ''
-                                }
-                              </>
-                            ))
-                          }
-                        </div>
-                      </div> : ''
-                  }
-
-                  {
-                    selectedInput == utilSelectedInput.gif ?
-                      <div>
-                        <div className='input_img_container'>
-                          <div className='sr-only' >
-                            <input type={'file'} onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image) }} accept="image/gif," id="select_gif" />
-                          </div>
-                          <div title='Select Image' onClick={e => document.getElementById("select_gif").click()} className='img_placeholder c_pointer'>
-                            <img src='/assets/select_image.png' />
-                          </div>
-                          {
-                            allFiles.map(el => (
-                              <>
-                                {
-                                  detectFileType(el) == "gif" ?
-                                    <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className='c_p img_placeholder'>
-                                      <img src={`${baseURL}/${el}`} />
-                                    </div> : ''
-                                }
-                              </>
-                            ))
-                          }
-                        </div>
-                      </div> : ''
-                  }
-                  {
-                    selectedInput == utilSelectedInput.video ?
-                      <div>
-                        <div className='input_img_container'>
-                          <div className='sr-only' >
-                            <input type={'file'} onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image) }} accept="video/mp4" id="select_video" />
-                          </div>
-                          <div title='Select Image' onClick={e => document.getElementById("select_video").click()} className='img_placeholder c_pointer'>
-                            <img src='/assets/select_image.png' />
-                          </div>
-                          {
-                            allFiles.map(el => (
-                              <>
-                                {
-                                  detectFileType(el) == "mp4" ?
-                                    <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className=' c_p img_placeholder' >
-                                      <div className='text-center'>
-                                        <img src={`/assets/video.svg`} />
-                                      </div>
-                                    </div> : ''
-                                }
-                              </>
-                            ))
-                          }
-                        </div>
-                      </div> : ''
-                  }
-                  {
-                    selectedInput == utilSelectedInput.color ?
-                      <div>
-                        <div className='placeholder_container'>
-                          {
-                            ["colors"].map((el, i) => (
-                              <div key={el} className='c_p color_placeholder  ' onClick={e => { setSelectedColor(`img${i}`); setSelectHistory({ ...selectHistory, color: el }); setActiveDB(utilActiveDB.color) }} style={{ background: el }}>
-                                <div className='img' style={{
-                                  display: selectedColor == `img${i}` ? 'block' : 'none'
-                                }} >
-                                  <img src='/assets/ok.svg' />
-                                </div>
-                              </div>
-                            ))
-                          }
-                        </div>
-                      </div> : ''
-                  }
-                  {/* layout */}
-                  {
-                    selectedInput == utilSelectedInput.layout ?
-                      <div className='input_grid'>
-                        <div className='v_grid c_p' onClick={e => setActiveDB(utilActiveDB.v_single)}>
-                          <div style={{ background: activeDB == "v_single" ? "#f9af12" : 'black' }} className='v_single' >
-                            <span>1</span>
-                          </div>
-                          <div style={{ background: activeDB == "v_single" ? "#f9af12" : 'black' }} className='v_single' >
-                            <span>2</span>
-                          </div>
-                        </div>
-                        <div className='h_grid c_p'>
-                          <div style={{ background: activeDB == "h_single" ? "#f9af12" : 'black' }} className='h_single ' >
-                            <span>1</span>
-                          </div>
-                          <div style={{ background: activeDB == "h_single" ? "#f9af12" : 'black' }} className='h_single  ' >
-                            <span>2</span>
-                          </div>
-                        </div>
-                        <div className='h_3_grid c_p'>
-                          <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
-                            <span>1</span>
-                          </div>
-                          <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
-                            <span>2</span>
-                          </div>
-                          <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
-                            <span>3</span>
-                          </div>
-                        </div>
-                      </div> : ''
-                  }
-                  {
-                    selectedInput == utilSelectedInput.player ?
-                      <div className='through_eggs'>
-                        <div className='_eggs'>
-                          <div className='t_egg_1'>
-                            <img src='/assets/RottenEgg.png' />
-                          </div>
-                          <div className='t_egg_2'>
-                            <img src='/assets/EasterEgg.png' />
-                            <span>5s</span>
-                          </div>
-                        </div>
-                        <h3>Through your eggs</h3>
-                      </div> : ''
-                  }
+                  </div>
                 </div>
-              </div>
-              {/* {
+                <div className='playing_input '>
+                  {
+                    activeDB == "round_winner" ?
+                      <div className='_overlay'></div> : ''
+                  }
+                  <div className='input_show' style={{
+                    height: selectedInput == utilSelectedInput.player ? "inherit" : "150px"
+                  }}>
+                    <div className='input_components pt-2'>
+                      {
+                        selectedInput == utilSelectedInput.img ?
+                          <div>
+                            <div className='input_img_container'>
+                              <div className='sr-only' >
+                                <input onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image); }} type={'file'} accept="image/x-png,image/jpeg" id="image_selector" />
+                              </div>
+                              <div title='Select Image' onClick={e => document.getElementById("image_selector").click()} className='img_placeholder c_pointer'>
+                                <img src='/assets/select_image.png' />
+                              </div>
+                              {
+                                allFiles.map(el => (
+                                  <>
+                                    {
+                                      detectFileType(el) == "png" ?
+                                        <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className='img_placeholder c_pointer'>
+                                          <img src={`${baseURL}/${el}`} />
+                                        </div> : ''
+                                    }
+                                  </>
+                                ))
+                              }
+                            </div>
+                          </div> : ''
+                      }
+
+                      {
+                        selectedInput == utilSelectedInput.gif ?
+                          <div>
+                            <div className='input_img_container'>
+                              <div className='sr-only' >
+                                <input type={'file'} onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image) }} accept="image/gif," id="select_gif" />
+                              </div>
+                              <div title='Select Image' onClick={e => document.getElementById("select_gif").click()} className='img_placeholder c_pointer'>
+                                <img src='/assets/select_image.png' />
+                              </div>
+                              {
+                                allFiles.map(el => (
+                                  <>
+                                    {
+                                      detectFileType(el) == "gif" ?
+                                        <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className='c_p img_placeholder'>
+                                          <img src={`${baseURL}/${el}`} />
+                                        </div> : ''
+                                    }
+                                  </>
+                                ))
+                              }
+                            </div>
+                          </div> : ''
+                      }
+                      {
+                        selectedInput == utilSelectedInput.video ?
+                          <div>
+                            <div className='input_img_container'>
+                              <div className='sr-only' >
+                                <input type={'file'} onChange={e => { setFile(e.target.files[0]); setActiveDB(utilActiveDB.image) }} accept="video/mp4" id="select_video" />
+                              </div>
+                              <div title='Select Image' onClick={e => document.getElementById("select_video").click()} className='img_placeholder c_pointer'>
+                                <img src='/assets/select_image.png' />
+                              </div>
+                              {
+                                allFiles.map(el => (
+                                  <>
+                                    {
+                                      detectFileType(el) == "mp4" ?
+                                        <div onClick={e => { setFile({ name: el }); setActiveDB(utilActiveDB.image) }} key={el} className=' c_p img_placeholder' >
+                                          <div className='text-center'>
+                                            <img src={`/assets/video.svg`} />
+                                          </div>
+                                        </div> : ''
+                                    }
+                                  </>
+                                ))
+                              }
+                            </div>
+                          </div> : ''
+                      }
+                      {
+                        selectedInput == utilSelectedInput.color ?
+                          <div>
+                            <div className='placeholder_container'>
+                              {
+                                ["colors"].map((el, i) => (
+                                  <div key={el} className='c_p color_placeholder  ' onClick={e => { setSelectedColor(`img${i}`); setSelectHistory({ ...selectHistory, color: el }); setActiveDB(utilActiveDB.color) }} style={{ background: el }}>
+                                    <div className='img' style={{
+                                      display: selectedColor == `img${i}` ? 'block' : 'none'
+                                    }} >
+                                      <img src='/assets/ok.svg' />
+                                    </div>
+                                  </div>
+                                ))
+                              }
+                            </div>
+                          </div> : ''
+                      }
+                      {/* layout */}
+                      {
+                        selectedInput == utilSelectedInput.layout ?
+                          <div className='input_grid'>
+                            <div className='v_grid c_p' onClick={e => setActiveDB(utilActiveDB.v_single)}>
+                              <div style={{ background: activeDB == "v_single" ? "#f9af12" : 'black' }} className='v_single' >
+                                <span>1</span>
+                              </div>
+                              <div style={{ background: activeDB == "v_single" ? "#f9af12" : 'black' }} className='v_single' >
+                                <span>2</span>
+                              </div>
+                            </div>
+                            <div className='h_grid c_p'>
+                              <div style={{ background: activeDB == "h_single" ? "#f9af12" : 'black' }} className='h_single ' >
+                                <span>1</span>
+                              </div>
+                              <div style={{ background: activeDB == "h_single" ? "#f9af12" : 'black' }} className='h_single  ' >
+                                <span>2</span>
+                              </div>
+                            </div>
+                            <div className='h_3_grid c_p'>
+                              <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
+                                <span>1</span>
+                              </div>
+                              <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
+                                <span>2</span>
+                              </div>
+                              <div style={{ background: activeDB == "h_single_3bar" ? "#f9af12" : 'black' }} className='h_single ' >
+                                <span>3</span>
+                              </div>
+                            </div>
+                          </div> : ''
+                      }
+                      {
+                        selectedInput == utilSelectedInput.player ?
+                          <div className='through_eggs'>
+                            <div className='_eggs'>
+                              <div className='t_egg_1'>
+                                <img src='/assets/RottenEgg.png' />
+                              </div>
+                              <div className='t_egg_2'>
+                                <img src='/assets/EasterEgg.png' />
+                                <span>5s</span>
+                              </div>
+                            </div>
+                            <h3>Through your eggs</h3>
+                          </div> : ''
+                      }
+                    </div>
+                  </div>
+                  {/* {
                 selectedInput != utilSelectedInput.player ?
                   <div className='p_search_bar'>
                     <div>
@@ -758,9 +755,10 @@ const DashboardMainContent = ({ state }) => {
                     </div>
                   </div> : ''
               } */}
-            </div>
-          </div>
-        </div>
+                </div>
+              </div>
+            </div> : ''
+        }
       </div>
     </div >
   )
