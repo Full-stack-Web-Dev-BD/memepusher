@@ -1,3 +1,23 @@
+.tools_collups {    
+    margin-left: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border: 1px solid #70707073;
+    border-radius: 7px;
+    background: #70707036;
+}
+
+.tools_collups img {
+    width: 50px;
+    position: absolute;    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    
+}
+
 .dashboard_main_content_inner {
     height: 100%;
     position: relative;
@@ -104,13 +124,10 @@
 
 /* playing tools */
 
-.tool_box_inner {
-    display: flex;
-    justify-content: space-between;
-}
 
 .playing_tool_box {
     padding: 25px;
+    padding-top: 0;
     background: url("../../../assets/fondo.png");
     background-size: cover;
     background-position: center;
@@ -118,6 +135,7 @@
 }
 
 .pl_icon_box {
+    display: inline-block;
     background-color: #ebebee;
     width: 55px;
     height: 55px;
@@ -141,7 +159,6 @@
 .playing_input {
     border-radius: 10px;
     background-color: #ebebee;
-    width: 80%;
     padding: 5px 25px;
     position: relative;
 

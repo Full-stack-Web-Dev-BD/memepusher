@@ -6,10 +6,9 @@ const { addUser, socketUsers, getUser } = require('../../utils/socketUser');
 
 
 UserSocket.post('/join', (req, res) => {
-    console.log("req body is ", req.body)
-    const { name, room, topic, owner, pp } = req.body;
-    console.log(req.body)
-    const { error, user } = addUser({ id: owner, name, room, topic, owner, pp });
+    const { name, room, topic, owner, pp ,roomID} = req.body;
+    const { error, user } = addUser({ id: owner, name,roomID, room, topic, owner, pp });
+    console.log(name," is   joining >>>>>>>>")
     if (error) return res.json(error);
     PusherServer.trigger("ROOM", "message", {
         roomName: room,
